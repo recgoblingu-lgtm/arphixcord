@@ -1,0 +1,53 @@
+name: Test ArphixCord database
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-database:
+    name: Create and test a temporary database
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test_password
+          MYSQL_DATABASE: arphixcord_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -ptest_password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Download the code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create the tables in the temporary database
+        run: pnpm db:push
+        env:
+          DATABASE_URL: mysql://root:test_password@127.0.0.1:3306/arphixcord_test
+
+      - name: Confirm the tables exist
+        run: |
+          TABLE_COUNT=$(mysql --protocol=TCP -h 127.0.0.1 -P 3306 -uroot -ptest_password arphixcord_test -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'arphixcord_test' AND table_name IN ('users','servers','serverMembers','channels','messages');")
+          test "$TABLE_COUNT" = "5"
+          echo "ArphixCord test database is healthy: 5 tables found."
