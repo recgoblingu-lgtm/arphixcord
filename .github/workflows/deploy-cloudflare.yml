@@ -31,7 +31,7 @@ jobs:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         run: pnpm exec vite build
       - name: Deploy static frontend to Cloudflare Workers
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' && secrets.VITE_API_BASE_URL != '' }}
+        if: "${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' && secrets.VITE_API_BASE_URL != '' }}"
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -39,5 +39,5 @@ jobs:
           wranglerVersion: latest
           command: deploy
       - name: Explain skipped deployment
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN == '' || secrets.CLOUDFLARE_ACCOUNT_ID == '' || secrets.VITE_API_BASE_URL == '' }}
+        if: "${{ secrets.CLOUDFLARE_API_TOKEN == '' || secrets.CLOUDFLARE_ACCOUNT_ID == '' || secrets.VITE_API_BASE_URL == '' }}"
         run: echo "Cloudflare deployment skipped until CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, and VITE_API_BASE_URL are added as GitHub Actions secrets."
