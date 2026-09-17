@@ -49,3 +49,9 @@ GitHub stores the source code and runs the workflows. It does not keep the live 
 ## Roadmap
 
 The current release is intentionally focused. Future additions can include direct messages, file uploads, notifications, realtime sockets, voice chat, video chat, and richer moderation tools.
+
+## Cloudflare frontend deployment
+
+The Cloudflare Worker in this repository publishes only the Vite frontend. The existing Express/tRPC server and database remain the backend. In the private GitHub repository, add these Actions secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, and `VITE_API_BASE_URL` (the public HTTPS URL of the running ArphixCord backend, without a trailing slash). The `Deploy ArphixCord frontend to Cloudflare Workers` workflow then deploys on every push to `main`.
+
+For reliable WebRTC calls, configure `TURN_URL`, `TURN_USERNAME`, and `TURN_CREDENTIAL` on the backend, not in this frontend repository. Browser push also requires backend VAPID secrets: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, and `VAPID_EMAIL`.
