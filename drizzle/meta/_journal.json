@@ -15,6 +15,13 @@
       "when": 1789617276521,
       "tag": "0001_luxuriant_stephen_strange",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1789618478752,
+      "tag": "0002_yielding_spyke",
+      "breakpoints": true
     }
   ]
 }

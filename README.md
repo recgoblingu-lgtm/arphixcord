@@ -5,6 +5,10 @@ ArphixCord is a private, Discord-inspired community chat app. It currently inclu
 - Sign in with Manus OAuth
 - Servers and text channels
 - Database-backed messages
+- Seven-day invite links
+- Server owner and moderator roles
+- Message reactions
+- Moderation audit records and moderator deletion
 - A dark, responsive chat workspace
 - Automatic testing and builds through GitHub Actions
 - A manual database update workflow, so you do not need to use a terminal
@@ -44,4 +48,4 @@ GitHub stores the source code and runs the workflows. It does not keep the live 
 
 ## Roadmap
 
-The current MVP is intentionally focused. Future additions can include invite links, roles and permissions, direct messages, reactions, file uploads, notifications, voice chat, video chat, and moderation tools.
+The current release is intentionally focused. Future additions can include direct messages, file uploads, notifications, realtime sockets, voice chat, video chat, and richer moderation tools.
