@@ -1,76 +1,18 @@
 import { int, index, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
-  id: int("id").autoincrement().primaryKey(),
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
-  name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  id: int("id").autoincrement().primaryKey(), openId: varchar("openId", { length: 64 }).notNull().unique(), name: text("name"), email: varchar("email", { length: 320 }), avatarUrl: varchar("avatarUrl", { length: 512 }), loginMethod: varchar("loginMethod", { length: 64 }), role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(), createdAt: timestamp("createdAt").defaultNow().notNull(), updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(), lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
 });
-
-export const servers = mysqlTable("servers", {
-  id: int("id").autoincrement().primaryKey(),
-  name: varchar("name", { length: 80 }).notNull(),
-  icon: varchar("icon", { length: 4 }).notNull().default("A"),
-  ownerId: int("ownerId").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => ({ ownerIdx: index("servers_owner_idx").on(table.ownerId) }));
-
-export const serverMembers = mysqlTable("serverMembers", {
-  id: int("id").autoincrement().primaryKey(),
-  serverId: int("serverId").notNull(),
-  userId: int("userId").notNull(),
-  role: mysqlEnum("role", ["owner", "moderator", "member"]).default("member").notNull(),
-  joinedAt: timestamp("joinedAt").defaultNow().notNull(),
-}, table => ({ serverIdx: index("server_members_server_idx").on(table.serverId), userIdx: index("server_members_user_idx").on(table.userId) }));
-
-export const channels = mysqlTable("channels", {
-  id: int("id").autoincrement().primaryKey(),
-  serverId: int("serverId").notNull(),
-  name: varchar("name", { length: 80 }).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => ({ serverIdx: index("channels_server_idx").on(table.serverId) }));
-
-export const messages = mysqlTable("messages", {
-  id: int("id").autoincrement().primaryKey(),
-  channelId: int("channelId").notNull(),
-  userId: int("userId").notNull(),
-  content: text("content").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => ({ channelIdx: index("messages_channel_idx").on(table.channelId), authorIdx: index("messages_author_idx").on(table.userId) }));
-
-export const invites = mysqlTable("invites", {
-  id: int("id").autoincrement().primaryKey(),
-  serverId: int("serverId").notNull(),
-  code: varchar("code", { length: 24 }).notNull().unique(),
-  createdBy: int("createdBy").notNull(),
-  expiresAt: timestamp("expiresAt"),
-  uses: int("uses").default(0).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => ({ serverIdx: index("invites_server_idx").on(table.serverId) }));
-
-export const messageReactions = mysqlTable("messageReactions", {
-  id: int("id").autoincrement().primaryKey(),
-  messageId: int("messageId").notNull(),
-  userId: int("userId").notNull(),
-  emoji: varchar("emoji", { length: 16 }).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => ({ messageIdx: index("reactions_message_idx").on(table.messageId), userIdx: index("reactions_user_idx").on(table.userId) }));
-
-export const moderationActions = mysqlTable("moderationActions", {
-  id: int("id").autoincrement().primaryKey(),
-  serverId: int("serverId").notNull(),
-  moderatorId: int("moderatorId").notNull(),
-  targetUserId: int("targetUserId"),
-  messageId: int("messageId"),
-  action: varchar("action", { length: 32 }).notNull(),
-  reason: text("reason"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => ({ serverIdx: index("moderation_server_idx").on(table.serverId) }));
+export const servers = mysqlTable("servers", { id: int("id").autoincrement().primaryKey(), name: varchar("name", { length: 80 }).notNull(), icon: varchar("icon", { length: 4 }).notNull().default("A"), ownerId: int("ownerId").notNull(), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ ownerIdx: index("servers_owner_idx").on(table.ownerId) }));
+export const serverMembers = mysqlTable("serverMembers", { id: int("id").autoincrement().primaryKey(), serverId: int("serverId").notNull(), userId: int("userId").notNull(), role: mysqlEnum("role", ["owner", "moderator", "member"]).default("member").notNull(), joinedAt: timestamp("joinedAt").defaultNow().notNull() }, table => ({ serverIdx: index("server_members_server_idx").on(table.serverId), userIdx: index("server_members_user_idx").on(table.userId) }));
+export const channels = mysqlTable("channels", { id: int("id").autoincrement().primaryKey(), serverId: int("serverId").notNull(), name: varchar("name", { length: 80 }).notNull(), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ serverIdx: index("channels_server_idx").on(table.serverId) }));
+export const messages = mysqlTable("messages", { id: int("id").autoincrement().primaryKey(), channelId: int("channelId").notNull(), userId: int("userId").notNull(), content: text("content").notNull(), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ channelIdx: index("messages_channel_idx").on(table.channelId), authorIdx: index("messages_author_idx").on(table.userId) }));
+export const invites = mysqlTable("invites", { id: int("id").autoincrement().primaryKey(), serverId: int("serverId").notNull(), code: varchar("code", { length: 24 }).notNull().unique(), createdBy: int("createdBy").notNull(), expiresAt: timestamp("expiresAt"), uses: int("uses").default(0).notNull(), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ serverIdx: index("invites_server_idx").on(table.serverId) }));
+export const messageReactions = mysqlTable("messageReactions", { id: int("id").autoincrement().primaryKey(), messageId: int("messageId").notNull(), userId: int("userId").notNull(), emoji: varchar("emoji", { length: 16 }).notNull(), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ messageIdx: index("reactions_message_idx").on(table.messageId), userIdx: index("reactions_user_idx").on(table.userId) }));
+export const moderationActions = mysqlTable("moderationActions", { id: int("id").autoincrement().primaryKey(), serverId: int("serverId").notNull(), moderatorId: int("moderatorId").notNull(), targetUserId: int("targetUserId"), messageId: int("messageId"), action: varchar("action", { length: 32 }).notNull(), reason: text("reason"), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ serverIdx: index("moderation_server_idx").on(table.serverId) }));
+export const directMessages = mysqlTable("directMessages", { id: int("id").autoincrement().primaryKey(), senderId: int("senderId").notNull(), recipientId: int("recipientId").notNull(), content: text("content").notNull(), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ senderIdx: index("dm_sender_idx").on(table.senderId), recipientIdx: index("dm_recipient_idx").on(table.recipientId) }));
+export const voiceRooms = mysqlTable("voiceRooms", { id: int("id").autoincrement().primaryKey(), serverId: int("serverId").notNull(), channelId: int("channelId").notNull(), createdAt: timestamp("createdAt").defaultNow().notNull() }, table => ({ channelIdx: index("voice_room_channel_idx").on(table.channelId) }));
+export const voiceParticipants = mysqlTable("voiceParticipants", { id: int("id").autoincrement().primaryKey(), roomId: int("roomId").notNull(), userId: int("userId").notNull(), cameraOn: int("cameraOn").default(0).notNull(), micOn: int("micOn").default(1).notNull(), screenSharing: int("screenSharing").default(0).notNull(), lastSeenAt: timestamp("lastSeenAt").defaultNow().notNull() }, table => ({ roomIdx: index("voice_participants_room_idx").on(table.roomId), userIdx: index("voice_participants_user_idx").on(table.userId) }));
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
