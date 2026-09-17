@@ -7,7 +7,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { getDb, getInvite, getMessagesForChannel, getServersForUser, isChannelMember, isServerMember, isServerModerator } from "./db";
+import { getDb, getInvite, getMembersForServer, getMessagesForChannel, getServersForUser, isChannelMember, isServerMember, isServerModerator } from "./db";
 
 const requireDb = async () => {
   const db = await getDb();
@@ -27,6 +27,7 @@ export const appRouter = router({
   }),
   community: router({
     listServers: protectedProcedure.query(({ ctx }) => getServersForUser(ctx.user.id)),
+    members: protectedProcedure.input(z.object({ serverId: z.number().int().positive() })).query(({ ctx, input }) => getMembersForServer(ctx.user.id, input.serverId)),
     messages: protectedProcedure.input(z.object({ channelId: z.number().int().positive() })).query(({ ctx, input }) => getMessagesForChannel(ctx.user.id, input.channelId)),
     createServer: protectedProcedure.input(z.object({ name: z.string().trim().min(2).max(48) })).mutation(async ({ ctx, input }) => {
       const db = await requireDb();

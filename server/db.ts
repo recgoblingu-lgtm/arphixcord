@@ -29,6 +29,11 @@ export async function getServersForUser(userId: number) {
   return serverRows.map(server => ({ ...server, channels: channelRows.filter(channel => channel.serverId === server.id) }));
 }
 
+export async function getMembersForServer(userId: number, serverId: number) {
+  const db = await getDb(); if (!db || !(await isServerMember(userId, serverId))) return [];
+  return db.select({ userId: serverMembers.userId, name: users.name, email: users.email, role: serverMembers.role, joinedAt: serverMembers.joinedAt }).from(serverMembers).innerJoin(users, eq(serverMembers.userId, users.id)).where(eq(serverMembers.serverId, serverId)).orderBy(asc(serverMembers.joinedAt));
+}
+
 export async function getMessagesForChannel(userId: number, channelId: number) {
   const db = await getDb(); if (!db || !(await isChannelMember(userId, channelId))) return [];
   const rows = await db.select({ id: messages.id, content: messages.content, createdAt: messages.createdAt, userId: messages.userId, authorName: users.name, authorEmail: users.email }).from(messages).innerJoin(users, eq(messages.userId, users.id)).where(eq(messages.channelId, channelId)).orderBy(asc(messages.createdAt)).limit(100);
